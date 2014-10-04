@@ -1,0 +1,147 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link rel="shortcut icon" href="car.ico" type="image/x-icon" />
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=30a69dedb72b9caf8489b35396d4d2cd"></script>
+	    <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+	    <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/changeMore.js"></script>
+	    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCCiVgJbm-jORRRkkbgmt6wMLBe6ifRZhM&sensor=true">
+		    var map;
+			var map_baidu;
+			var marker1;
+			var marker_baidu1;
+			var marker2;
+			var marker_baidu2;
+			var routePath;
+			var routePath_baidu;
+			var baiduroutePath;
+			var googleroutePath;
+
+			var routePath_con;
+			var routePath_baidu_con;
+			var baiduroutePath_con;
+			var googleroutePath_con;
+			var infowindow1;
+			var infowindow2;
+			var directionsDisplay;
+			var driving;
+			var carggm;
+			var carhgm;
+			var carbbm;
+			var carhbm;
+		</script>
+		<link href="css/CSS.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="javaScript/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="javaScript/input.js"></script>
+		<script type="text/javascript" src="javaScript/roadcondition.js"></script>
+		<script type="text/javascript" src="javaScript/map.js"></script>
+		<script type="text/javascript" src="javaScript/enter.js"></script>
+		<script type="text/javascript" src="javaScript/fcgi.js"></script>
+		<script type="text/javascript" src="javaScript/time.js"></script>
+		<script type="text/javascript" src="javaScript/tab.js"></script>
+		<script type="text/javascript" src="javaScript/winresize.js"></script>
+		<script type="text/javascript" src="javaScript/LuShu_min.js"></script>
+		<script type="text/javascript" src="javaScript/poi.js"></script>
+		<script type="text/javascript" src="javaScript/mercator.js"></script>
+		<script type="text/javascript" src="javaScript/demo.js"></script>
+
+
+	<title>XXX</title>
+</head>
+
+<body onload="initialize();getTime();tab()">
+	<div style='position:absolute;width:100%;height:100%;z-index:-1'>
+		<img src="image/landscape.jpg" height="100%" width="100%"/>
+	</div>
+	<div id="page-container">
+		<div id="Header">
+			<div id="Title">Real Time Route Recommendation</div>
+			<div id="Time"></div>
+		</div>
+
+		<div id="Pagebody">
+			<div id="Sidebar">
+				<div id="Inputbar">
+					<form name="inputform" id="inputform" style='height:0px'action="javascript:{process()}">
+						<div id="Picture">
+							<img src="image/pic1.jpg" alt="marker image" height="50px" style="vertical-align: middle; margin: 0 auto; margin-top: 3px; margin-left: 2px">
+						</div>
+						<div id="Launcher">
+							<input style="display: none" name="pointhide" id="pointhide">
+							
+							<div class="line">
+								<div align="center">
+									<input type="text" style="display: none;" id="start" name="start"  maxlength="2048" value="40.0003,116.3276">
+									<input type="text" style="width:214px; height:22px;" name="starttext" id="starttext"  maxlength="2048" value="Starting place" onkeydown="onkeyup1();" onkeyup="onkeyup1()" onfocus="javascript:if(this.value=='Starting place')this.value='';">
+								</div>
+								     <div class="auto_hidden" id="autostart"></div>
+								<script>
+								var autoCompletestart = new AutoComplete('starttext','autostart');
+								</script>
+							</div>
+							<!--ending input form-->
+							<div class="line">
+								<div align="center">
+									<input type="text" style="display: none;" id="end" name="end"  maxlength="2048" value="39.9067,116.4885">
+									<input type="text" style="width:214px;height:22px;" name="endtext" id="endtext"  maxlength="2048" value="Ending place" onkeydown="onkeyup1();" onkeyup="onkeyup1()" onfocus="javascript:if(this.value=='Ending place')this.value='';">
+								</div>
+								     <div class="auto_hidden" id="autoend"></div>
+								<script>
+								var autoCompleteend = new AutoComplete('endtext','autoend');
+								</script>
+							</div>
+							<!--select-->
+							<div class="line" align="center">
+									<select id="routeState" style="width:110; float: left" name="routeState">
+										<option value="1" selected="true">Minimum Time</option>
+										<option value="2">Minimum Distance</option>
+									</select>
+									<input type="hidden" id="settime" value="0"><!--debug-->
+									<input type="submit" value="Search" style="cursor: pointer; background: url(image/searchBtn.png) no-repeat; line-height:24px;height:28px; font-size:14px;width:77px; text-align:center;  border:none;color: white; float: right" name="search_route" id="search_route">
+							</div>
+
+						</div>
+						<!--invertion-->
+						<div id='Invertion'>
+							<img src="image/invertion.jpg" alt="invertion " height="24px" style="cursor:pointer; background: #F0F0F0; margin: 0 auto; margin-top: 17px; border: 1px; border-color: black" onclick="invertion()">
+						</div>
+					</form>
+				</div><!--end of input div-->
+				<div class="barDiv"></div>
+				<br/>
+				<div id="wrap">
+						<ul id="tab_t">
+							<li class="act"><img src="image/carpic.png" height="15px" style="vertical-align: middle; margin-right: 1px">Recommend Route</li>
+							<li><img src="image/google.jpg" height="15px" style="vertical-align: middle; margin-right: 1px">google Map</li>
+						</ul>
+						<div id="tab_c">
+							<div id="hana" style="height:407px"></div>
+							<div id="google" class="hide"></div>
+							<div id="baidu" class="hide"></div>
+						</div>
+					</div>
+					<div><img src="image/comparison.png" height="23px" style="width: 200px; vertical-align: middle; margin: 0 auto; margin-top: 10px; margin-left: 10px; clear: both"></div>					
+					
+					<div style="margin: 0 auto;clear: both">
+						<button onclick="comparewithgg();" style="text-align: center; width: 120px; height: 25px; margin: 0 auto; margin-left: 25px; color: white; background: #0072E3; cursor: pointer; border-color: #0072E3; float: left;">Comp Google</button>
+
+						<button onclick="comparewithbd();" style="text-align: center; width: 120px; height: 25px; margin: 0 auto; margin-left: 25px; color: white; background: #0072E3; cursor: pointer; border-color: #0072E3;">Comp Baidu</button>
+
+						<button onclick="online();" style="text-align: center; width: 120px; height: 25px; margin: 34px auto; margin-left: -119px; color: white; background: #0072E3; cursor: pointer; border-color: #0072E3;float:left;">Real-time Model</button>
+
+						<button onclick="offline();" style="text-align: center; width: 120px; height: 25px; margin: 10px auto; margin-left: 25px; color: white; background: #0072E3; cursor: pointer; border-color: #0072E3; ">Experience Model</button>
+						
+					</div>
+
+			</div><!--end of side bar div-->
+			<div id="Content">
+					<div id="map_canvas" style="position:relative;overflow:hidden;background-color:white;"></div>
+					<div id=""></div>
+				</div>
+		</div><!--end of page body div-->
+<div id="Footer"></div>
+	</div>
+
+</body>
+</html>
